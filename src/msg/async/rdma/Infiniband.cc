@@ -750,7 +750,7 @@ Infiniband::Infiniband(CephContext *cct, const std::string &device_name, uint8_t
 
 Infiniband::~Infiniband()
 {
-  assert(ibv_destroy_srq(srq) == 0);
+  ibv_destroy_srq(srq);
   delete memory_manager;
   delete pd;
 }
