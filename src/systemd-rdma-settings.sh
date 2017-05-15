@@ -2,7 +2,7 @@
 
 SERV=`echo $1 | awk -F@ '{print $1}'`
 FILE="/usr/lib/systemd/system/"$SERV"@.service"
-ARG_DIR="/run/systemd/system/"$1""
+ARG_DIR=/run/systemd/system/$1
 NAME="$1"
 FLAG=false
 
@@ -47,16 +47,15 @@ rm_config(){
 	done
 }
 
-if echo $(ceph-conf ms_type) $(ceph-conf ms_public_type) $(ceph-conf ms_cluster_type) | egrep -q '*rdma*'; then
-	if [ "$2" != "clean" ]; then
-		add_config $MON_DIR $ARG_DIR $OSD_DIR
-		if [ "$FLAG" = true ]; then
-			sudo systemctl daemon-reload
-		fi
-	else
-		rm_config $MON_DIR $ARG_DIR $OSD_DIR
-		if [ "$FLAG" = true ]; then
-			sudo systemctl daemon-reload
-		fi
+if [ "$2" != "clean" ]; then
+	add_config $ARG_DIR
+	if [ "$FLAG" = true ]; then
+		sudo systemctl daemon-reload
+	fi
+else
+	rm_config $ARG_DIR
+	if [ "$FLAG" = true ]; then
+		sudo systemctl daemon-reload
 	fi
 fi
+
